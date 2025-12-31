@@ -6,21 +6,22 @@ A collection of Claude Code Agent Skills.
 
 | Skill | Description |
 |-------|-------------|
-| [collaborating-with-coco](./collaborating-with-coco) | Bridges Claude with Coco CLI for multi-model collaboration |
+| [collaborating-with-coco](https://github.com/luw2007/collaborating-with-coco) | Bridges Claude with Coco CLI for multi-model collaboration |
 
 ## Installation
 
-### Via OpenSkills CLI
+### Install Individual Skill
 
 ```bash
-openskills install https://github.com/luw2007/skills
+openskills install luw2007/collaborating-with-coco
 ```
 
-### Manual Installation
+### Install All Skills (Manual)
 
-Copy the skill directory to your Claude Code skills directory:
-- User-level: `~/.claude/skills/<skill-name>/`
-- Project-level: `.claude/skills/<skill-name>/`
+```bash
+git clone --recursive https://github.com/luw2007/skills.git
+cp -r skills/collaborating-with-coco ~/.claude/skills/
+```
 
 ## Acknowledgments
 
