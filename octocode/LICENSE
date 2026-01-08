@@ -1,0 +1,51 @@
+MIT License
+
+Copyright (c) 2025 luw2007 (Claude Code Skill Author)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+IMPORTANT NOTES:
+
+1. Relationship with Octocode:
+   - This is a Claude Code Skill that integrates with Octocode
+   - Skill Author: luw2007
+   - Octocode Project: https://github.com/muvon/octocode (Apache-2.0)
+   - Octocode is a separate project by Muvon Un Limited
+   - This skill does NOT contain any Octocode source code
+   - This skill only calls Octocode's command-line interface
+
+2. License Compatibility:
+   - This skill: MIT License
+   - Octocode: Apache License 2.0
+   - This skill is NOT a derivative work of Octocode under Apache 2.0
+     definitions (it only links to Octocode's interfaces)
+   - See NOTICE file for full attribution
+
+3. Disclaimer:
+   - This skill is provided as EXPERIMENTAL and TESTING version only
+   - NOT recommended for production use
+   - Authors and contributors disclaim all liability for damages
+
+4. Trademark Notice:
+   - No rights to "Octocode" trademark are claimed or implied
+   - All trademarks belong to their respective owners
+
+Use at your own risk.
