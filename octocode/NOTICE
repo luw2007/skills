@@ -1,0 +1,26 @@
+NOTICE
+
+This Claude Code Skill integrates with Octocode, which is a separate project.
+
+================================================================================
+
+Octocode
+Copyright 2025 Muvon Un Limited
+Licensed under the Apache License, Version 2.0
+Project: https://github.com/muvon/octocode
+Homepage: https://octocode.muvon.io
+
+================================================================================
+
+This skill (claude-skill-octocode) does NOT include any source code from Octocode.
+It merely provides integration scripts and documentation for using Octocode
+with Claude Code via command-line interfaces.
+
+This skill is provided under the MIT License (see LICENSE file).
+
+The relationship between the projects:
+- Octocode: The core AI code indexer (Apache 2.0)
+- claude-skill-octocode: Integration wrapper for Claude Code (MIT)
+
+No trademark rights to "Octocode" or related marks are claimed or implied.
+All trademarks belong to their respective owners.
