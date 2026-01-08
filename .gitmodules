@@ -1,0 +1,3 @@
+[submodule "octocode"]
+	path = octocode
+	url = https://github.com/luw2007/claude-skill-octocode.git
