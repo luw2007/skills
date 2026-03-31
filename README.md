@@ -8,6 +8,7 @@ A collection of Claude Code Agent Skills.
 |-------|-------------|
 | [collaborating-with-coco](https://github.com/luw2007/collaborating-with-coco) | Bridges Claude with Coco CLI for multi-model collaboration |
 | [octocode](https://github.com/luw2007/claude-skill-octocode) | AI-powered code indexer with semantic search, knowledge graphs (GraphRAG), and persistent memory system |
+| [skill-selector](./skill-selector/) | 通用 skill 选择器，通过深度源码分析构建决策树，引导用户快速选定最合适的 skill |
 
 ## Installation
 
@@ -16,6 +17,7 @@ A collection of Claude Code Agent Skills.
 ```bash
 openskills install luw2007/collaborating-with-coco
 openskills install luw2007/octocode
+openskills install luw2007/skill-selector
 ```
 
 ### Install All Skills (Manual)
@@ -24,6 +26,7 @@ openskills install luw2007/octocode
 git clone --recursive https://github.com/luw2007/skills.git
 cp -r skills/collaborating-with-coco ~/.claude/skills/
 cp -r skills/octocode ~/.claude/skills/
+cp -r skills/skill-selector ~/.claude/skills/
 ```
 
 ## Acknowledgments
