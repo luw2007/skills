@@ -1,0 +1,73 @@
+{
+  "_comment_langextract": "langextract 结构化提取配置，支持所有 OpenAI 兼容 API",
+  "_comment_providers": {
+    "volcengine_coding": {
+      "model": "doubao-seed-2-0-code",
+      "baseUrl": "https://ark.cn-beijing.volces.com/api/coding/v3",
+      "apiKey": "VOLCENGINE_API_KEY 或实际密钥"
+    },
+    "volcengine": {
+      "model": "doubao-pro-32k",
+      "baseUrl": "https://ark.cn-beijing.volces.com/api/v3",
+      "apiKey": "VOLCENGINE_API_KEY"
+    },
+    "zhipu": {
+      "model": "glm-4-flash",
+      "baseUrl": "https://open.bigmodel.cn/api/paas/v4",
+      "apiKey": "ZHIPUAI_API_KEY"
+    },
+    "openai": {
+      "model": "gpt-4o-mini",
+      "baseUrl": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY"
+    }
+  },
+  "langextract": {
+    "provider": "volcengine_coding",
+    "model": "doubao-seed-2-0-code",
+    "baseUrl": "https://ark.cn-beijing.volces.com/api/coding/v3",
+    "apiKey": "VOLCENGINE_API_KEY"
+  },
+
+  "_comment_zhipu_search": "智谱 AI 网络搜索配置",
+  "zhipu_search": {
+    "enabled": true,
+    "apiKey": "ZHIPU_SEARCH_API_KEY",
+    "_comment_search_engine": "搜索引擎: search_std(基础版) | search_pro(高阶版) | search_pro_sogou(搜狗) | search_pro_quark(夸克)",
+    "search_engine": "search_pro",
+    "_comment_count": "返回结果数，范围 1-50",
+    "count": 15,
+    "_comment_timelimit": "时间过滤: day(一天) | week(一周) | month(一月) | year(一年) | null(不限)",
+    "timelimit": null,
+    "_comment_content_size": "内容长度: medium(摘要) | high(详细)",
+    "content_size": "high",
+    "_comment_search_domain_filter": "限定搜索域名，如 'www.example.com'，null 表示不限",
+    "search_domain_filter": null
+  },
+
+  "_comment_duckduckgo_search": "DuckDuckGo 搜索配置",
+  "duckduckgo_search": {
+    "enabled": true,
+    "_comment_maxResults": "返回结果数",
+    "maxResults": 20,
+    "_comment_region": "地区代码: cn-zh(中国) | us-en(美国) | wt-wt(无限制) 等",
+    "region": "wt-wt",
+    "_comment_safesearch": "安全搜索: on | moderate | off",
+    "safesearch": "moderate",
+    "_comment_timelimit": "时间过滤: day | week | month | year | null(不限)",
+    "timelimit": null,
+    "_comment_backend": "搜索后端: auto | bing | google | duckduckgo | brave | yandex | yahoo | wikipedia",
+    "backend": "auto",
+    "_comment_proxy": "代理地址，如 'http://127.0.0.1:7890' 或 'tb'(Tor Browser)，null 表示不使用",
+    "proxy": null,
+    "_comment_timeout": "请求超时（秒）",
+    "timeout": 10
+  },
+
+  "_comment_volcengine_search": "火山引擎联网问答配置",
+  "volcengine_search": {
+    "enabled": false,
+    "apiKey": "VOLCENGINE_SEARCH_API_KEY",
+    "botId": "VOLCENGINE_BOT_ID"
+  }
+}

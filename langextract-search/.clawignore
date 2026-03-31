@@ -1,0 +1,13 @@
+# 配置文件（包含敏感信息如 API Key）
+conf.json
+
+# 输出目录（运行时生成）
+output/
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+*.so
+
+# 系统文件
+.DS_Store
