@@ -1,0 +1,19 @@
+interface:
+  display_name: "CLI Help Layers"
+  short_description: "CLI 帮助信息分层设计指南：usage、help、man 三层文档规范"
+  default_prompt: "设计 agent 友好的 CLI 帮助文档"
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "generic"
+  activation:
+    mode: "manual"
+  execution:
+    context: "inline"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    generic: "neutral-source"

@@ -1,37 +1,45 @@
 # skills
 
-A collection of Claude Code Agent Skills.
+A collection of AI Agent Skills.
 
 ## Available Skills
 
 | Skill | Description |
 |-------|-------------|
-| [collaborating-with-coco](https://github.com/luw2007/collaborating-with-coco) | Bridges Claude with Coco CLI for multi-model collaboration |
-| [octocode](https://github.com/luw2007/claude-skill-octocode) | AI-powered code indexer with semantic search, knowledge graphs (GraphRAG), and persistent memory system |
-| [skill-selector](./skill-selector/) | 通用 skill 选择器，通过深度源码分析构建决策树，引导用户快速选定最合适的 skill |
+| [cli-help-layers](./skills/cli-help-layers/) | CLI 帮助信息分层设计指南，让 AI Agent 高效解析和调用 CLI 命令 |
+| [favorites-curator](./skills/favorites-curator/) | 从本地已安装的仓库、应用、skill、扩展中构建和维护收藏目录清单 |
+| [langextract-search](./skills/langextract-search/) | 集成智谱搜索、DuckDuckGo 搜索和多模型结构化提取的完整工作流 |
+| [metadata-naming](./skills/metadata-naming/) | 定义、应用或审查基于元数据的可复用文件命名规范 |
+| [octocode](./skills/octocode/) | AI 驱动的代码索引器，提供语义搜索、知识图谱（GraphRAG）和持久化记忆系统 |
+| [rtk-rewrite](./skills/rtk-rewrite/) | 拦截 exec 工具调用并委托 rtk rewrite 执行重写以减少 token 消耗 |
+| [skill-iter](./skills/skill-iter/) | Skill 自迭代能力评审与改进工具，输出结构化评分报告与改进建议 |
+| [skill-selector](./skills/skill-selector/) | 通用 skill 选择器，通过深度分析构建决策树，引导用户快速选定最合适的 skill |
+| [skill-yao-manager](./skills/skill-yao-manager/) | Skill 工程化管理工具，支持创建、验证、检查、lint、打包 skill |
 
 ## Installation
 
-### Install Individual Skill
+### Via npx skills (Recommended)
 
 ```bash
-openskills install luw2007/collaborating-with-coco
-openskills install luw2007/octocode
-openskills install luw2007/skill-selector
+# 列出可用 skill
+npx skills add luw2007/skills --list
+
+# 安装指定 skill
+npx skills add luw2007/skills --skill cli-help-layers
+npx skills add luw2007/skills --skill octocode
+npx skills add luw2007/skills --skill skill-selector
+
+# 安装全部
+npx skills add luw2007/skills --all
 ```
 
-### Install All Skills (Manual)
+### Manual
 
 ```bash
-git clone --recursive https://github.com/luw2007/skills.git
-cp -r skills/collaborating-with-coco ~/.claude/skills/
-cp -r skills/octocode ~/.claude/skills/
-cp -r skills/skill-selector ~/.claude/skills/
+git clone https://github.com/luw2007/skills.git
+cp -r skills/skills/octocode ~/.claude/skills/
+cp -r skills/skills/skill-selector ~/.claude/skills/
 ```
-
-## Acknowledgments
-
-This project structure is inspired by [GuDaStudio/skills](https://github.com/GuDaStudio/skills).
 
 ## License
 

@@ -1,0 +1,9 @@
+{
+  "session_id": "test-session-001",
+  "skill_name": "sre-quality",
+  "messages": [
+    { "role": "user", "content": "帮我检查这个服务的健康状态" },
+    { "role": "assistant", "content": "正在检查...发现 3 个异常" }
+  ],
+  "result": { "rating": 2, "category": "error", "turns": 1 }
+}

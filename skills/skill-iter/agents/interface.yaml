@@ -1,0 +1,32 @@
+interface:
+  display_name: "Skill Evolve"
+  short_description: "Skill 演化引擎 — 审计 D1-D7 自迭代能力 + 从轨迹自动生成改进补丁"
+  default_prompt: "用 $skill-evolve audit 审计这个 skill，输出 D1-D7 评分报告和改进建议。"
+  trigger_words:
+    - "skill 评审"
+    - "自迭代检查"
+    - "skill audit"
+    - "skill improve"
+    - "技能改进"
+    - "skill evolve"
+    - "skill 演化"
+    - "轨迹分析"
+    - "trajectory evolve"
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "claude"
+    - "generic"
+  activation:
+    mode: "manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    claude: "neutral-source-plus-adapter"
+    generic: "neutral-source"

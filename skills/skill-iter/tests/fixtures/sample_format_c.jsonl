@@ -1,0 +1,4 @@
+{"type":"human","message":{"role":"user","content":"请帮我调试这个函数"}}
+{"type":"assistant","message":{"role":"assistant","content":"我来看看...这里有个 error 导致了 exception"}}
+{"type":"human","message":{"role":"user","content":"能修复吗？"}}
+{"type":"assistant","message":{"role":"assistant","content":"已经修复了。"}}

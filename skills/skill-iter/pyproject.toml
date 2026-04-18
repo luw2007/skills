@@ -1,0 +1,41 @@
+[project]
+name = "skill-iter"
+version = "2.0.0"
+description = "单机本地优先的 Skill 迭代引擎——从 Agent 会话轨迹中自动提取经验、生成 SKILL.md 改进补丁"
+requires-python = ">=3.10"
+authors = [{ name = "luw2007", email = "luw2007@gmail.com" }]
+license = { text = "MIT" }
+dependencies = [
+    "click>=8.0",
+    "litellm>=1.40",
+    "watchdog>=4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+]
+
+[project.scripts]
+skill-iter = "skill_iter.cli:main"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.skill-iter]
+llm_model = "anthropic/claude-sonnet-4-20250514"
+llm_base_url = ""
+max_trajectory_tokens = 16000
+max_patch_lines = 50
+pending_dir = ".pending_evolution"
+watch_patterns = ["*.md", "*.json", "*.jsonl"]
+adapter = "none"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

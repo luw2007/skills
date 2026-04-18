@@ -1,0 +1,70 @@
+{
+  "recommended_threshold": 0.33,
+  "negative_patterns": [
+    "one-off",
+    "just explain",
+    "summarize this code",
+    "what does this do",
+    "translate"
+  ],
+  "should_trigger": [
+    {
+      "text": "评审一下这个 skill 的自迭代能力",
+      "family": "skill_audit"
+    },
+    {
+      "text": "检查这个 SKILL.md 是否具备自迭代闭环",
+      "family": "skill_audit"
+    },
+    {
+      "text": "skill audit this package",
+      "family": "skill_audit"
+    },
+    {
+      "text": "帮我做一次 skill 自迭代检查",
+      "family": "skill_audit"
+    },
+    {
+      "text": "用 skill-improver 分析一下这个技能的 D1-D7 评分",
+      "family": "skill_audit"
+    },
+    {
+      "text": "这个 skill 的经验沉淀机制够用吗？帮我评审一下",
+      "family": "skill_audit"
+    },
+    {
+      "text": "skill improve this SKILL.md",
+      "family": "skill_improve"
+    },
+    {
+      "text": "帮我改进这个 skill 的自迭代能力",
+      "family": "skill_improve"
+    },
+    {
+      "text": "这个技能缺少反馈采集机制，帮我补上",
+      "family": "skill_improve"
+    },
+    {
+      "text": "给这个 skill 加上 Lessons Learned 管理",
+      "family": "skill_improve"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "帮我写一个新的 skill",
+      "reason": "创建新 skill 应由 yao-meta-skill 处理"
+    },
+    {
+      "text": "重构这个函数",
+      "reason": "代码重构不是 skill 评审"
+    },
+    {
+      "text": "解释一下 D1 维度是什么意思",
+      "reason": "知识问答不触发评审流程"
+    },
+    {
+      "text": "把这个工作流包装成 skill",
+      "reason": "工作流打包由 yao-meta-skill 处理"
+    }
+  ]
+}

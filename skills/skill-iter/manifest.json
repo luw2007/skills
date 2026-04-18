@@ -1,0 +1,14 @@
+{
+  "name": "skill-iter",
+  "version": "2.0.0",
+  "owner": "luw2007",
+  "updated_at": "2026-04-16",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "production",
+  "review_cadence": "quarterly",
+  "target_platforms": ["claude", "generic"],
+  "factory_components": ["src/skill_iter", "scripts", "evals"],
+  "cli_entry": "skill-iter",
+  "previous_name": "skill-evolve"
+}

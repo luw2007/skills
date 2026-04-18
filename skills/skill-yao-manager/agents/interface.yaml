@@ -1,0 +1,22 @@
+interface:
+  display_name: "Skill Yao Manager"
+  short_description: "Skill 工程化管理：创建、验证、检查、打包"
+  default_prompt: "检查并管理项目中的 skill 质量"
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "generic"
+  activation:
+    mode: "manual"
+    paths:
+      - "skills/"
+  execution:
+    context: "inline"
+    shell: "bash"
+    entry_point: "scripts/yao_ops.py"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    generic: "neutral-source"

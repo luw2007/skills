@@ -1,0 +1,12 @@
+{
+  "name": "skill-yao-manager",
+  "version": "2.0.0",
+  "owner": "luwei.will",
+  "updated_at": "2026-04-16",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "production",
+  "review_cadence": "monthly",
+  "target_platforms": ["generic"],
+  "factory_components": ["scripts"]
+}
