@@ -1,0 +1,19 @@
+interface:
+  display_name: "Exploration Tree"
+  short_description: "通用探索树：系统性穷举、验证、排除的复杂问题求解框架"
+  default_prompt: "使用探索树记录和管理复杂问题的求解路径"
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "generic"
+  activation:
+    mode: "manual"
+  execution:
+    context: "inline"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    generic: "neutral-source"
