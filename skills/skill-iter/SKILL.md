@@ -1,5 +1,5 @@
 ---
-name: skill-improver
+name: skill-iter
 description: |
   Skill 自迭代能力评审与改进工具。
   评估任意 SKILL.md 是否具备自迭代闭环能力，输出结构化评分报告与改进建议。
@@ -7,7 +7,7 @@ description: |
   触发词：skill 评审、自迭代检查、skill audit、skill improve、技能改进。
 ---
 
-# Skill Improver — 自迭代能力评审标准
+# Skill Iter — 自迭代能力评审标准
 
 评估一个 Skill 是否具备"自己让自己变好"的能力，输出结构化评分与可操作的改进建议。
 
@@ -191,7 +191,7 @@ THREAT_PATTERNS = [
 
 ## 边界与排除
 
-以下场景不应触发本 skill，请 do not use skill-improver：
+以下场景不应触发本 skill，请 do not use skill-iter：
 
 - 创建新 skill — 应由 yao-meta-skill 处理
 - 代码重构 / bug 修复 — 不属于 skill 评审
