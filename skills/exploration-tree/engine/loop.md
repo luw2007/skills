@@ -43,7 +43,19 @@ iteration(state, domain):
     node.actual = result.actual
     node.evidence = result.evidence
     node.conclusion = result.conclusion
-    if result.status == "success" and node needs drill:
+
+    # === 排除粒度与假设标注 ===
+    if node.status == "failed":
+      # 排除的是函数还是子系统？子系统级排除需要所有入口点打勾
+      node.exclusion_scope = result.exclusion_scope  # "function" | "subsystem"
+      node.excluded_paths = result.excluded_paths    # ["TX", "RX", ...] 哪些方向已排除
+      node.unverified_assumptions = result.unverified_assumptions  # [ASSUMPTION] 列表
+      # 子系统级排除必须有完整入口点清单
+      if node.exclusion_scope == "subsystem" and not result.all_entry_points_checked:
+        node.status = "blocked"
+        node.blocked_reason = "子系统级排除需要所有入口点逐一确认"
+
+    if node.status == "success" and node needs drill:
       node.children = domain.drill(node, state.context)
       node.status = "active"
 
@@ -64,6 +76,45 @@ iteration(state, domain):
   else:
     schedule_next(state)
 ```
+
+## 排除协议（Elimination Protocol）
+
+### 规则 1：排除粒度
+
+- **可以排除**：一个具体函数/路径（如 `rxkad_verify_packet` 的 RX decrypt 方向）
+- **不可以排除**：一整个子系统（如 rxkad），除非该子系统的所有入口点都已逐一检查
+- 每个子系统维护入口点清单（TX/RX/error/encap），逐一打勾才能整体排除
+
+### 规则 2：排除必须包含"未验证假设"清单
+
+每次标记 `failed` 时，result 必须包含：
+```
+excluded_paths: ["RX"]           # 排除的是哪条路径
+unverified_assumptions:          # 未验证假设列表
+  - "[ASSUMPTION] TX 路径（secure_packet）未检查是否对 splice 页做就地加密"
+  - "[ASSUMPTION] loopback 发送是否保留原始页引用"
+verified_facts:                  # 已验证事实（附代码行号）
+  - "rxkad_verify_packet_1:460 使用 sg,sg 就地解密"
+  - "recvmsg.c:158 调用 verify_packet"
+```
+
+如果 `unverified_assumptions` 非空 → 状态自动降级为 `blocked`。
+
+### 规则 3：排除后反向探针（30 秒检查）
+
+每排除一个候选后，立即执行反向探针：
+```bash
+# 检查是否存在未审计的对称函数
+grep -rn "{subsystem}_secure\|{subsystem}_encrypt\|{subsystem}_prepare" $KERNEL_SRC/net/
+grep -rn "{subsystem}_send\|{subsystem}_xmit\|{subsystem}_output" $KERNEL_SRC/net/
+```
+如果发现未审计的 TX/send 对称函数 → 重新打开候选为 `blocked`。
+
+### 规则 4：排除粒度强制（引擎层）
+
+迭代协议中的 `exclusion_scope` 字段强制执行：
+- `exclusion_scope: "function"` — 只排除特定函数的特定方向，不影响同子系统其他入口
+- `exclusion_scope: "subsystem"` — 需要 `all_entry_points_checked: true`，否则自动降级为 `blocked`
 
 ## ScheduleWakeup 调度策略
 

@@ -63,8 +63,9 @@
 1. **定位目标函数** — 读取候选子系统的主文件（如 `net/xfrm/xfrm_input.c`）
 2. **穷举所有 caller（必须）** — 不可从"最常见路径"推断输入特征
 3. **对每个 caller 独立分析 page 来源** — 该 caller 路径是否能接收 file-backed page？
-4. **判断写回** — 解密/变换操作是否 in-place？是否有 `skb_cow` / `pskb_copy` 保护？
-5. **判断可达性** — 非特权用户（通过 user ns）能否触发此路径？
+4. **追踪物理页传递链（必须）** — 禁止从协议语义推断页面类型；必须追踪：splice→skb frag→send→loopback/encap→recv 是否保留原始页引用
+5. **判断写回** — 解密/变换操作是否 in-place？是否有 `skb_cow` / `pskb_copy` 保护？
+6. **判断可达性** — 非特权用户（通过 user ns）能否触发此路径？
 
 ### ⚠️ 排除前强制检查清单（SOUNDNESS GATE）
 
@@ -84,8 +85,42 @@
 ### 判定标准
 
 - **success**: file-backed page 可达 + in-place write 存在 + 无 copy 保护 + 非特权可触发
-- **failed**: **所有** caller 路径都已验证不满足条件（排除检查清单全部✓）
-- **blocked**: 存在未验证的 caller / 代码过于复杂 / 依赖未确认的前提
+- **failed**: **所有** caller 路径都已验证不满足条件（排除检查清单全部✓）+ 未验证假设清单为空
+- **blocked**: 存在未验证的 caller / 代码过于复杂 / 依赖未确认的前提 / 未验证假设非空
+
+### 排除输出格式（必须）
+
+每次标记 "failed" 时，必须输出以下结构：
+
+```
+exclusion_scope: "function"          # "function" 或 "subsystem"
+excluded_paths: ["RX decrypt"]       # 排除的具体方向
+verified_facts:                      # 已验证事实（附代码行号）
+  - "rxkad_verify_packet_1:460 使用 sg,sg 就地解密 — 确认 in-place"
+  - "recvmsg.c:158 调用 verify_packet — 确认 RX 入口"
+unverified_assumptions:              # 未验证假设（标记 [ASSUMPTION]）
+  - "[ASSUMPTION] TX 路径 rxkad_secure_packet 未检查是否对 splice 页做就地加密"
+  - "[ASSUMPTION] loopback 发送后接收端 skb frag 是否保留原始页引用"
+remaining_entry_points:              # 同子系统未检查的入口
+  - "rxkad_secure_packet (TX encrypt)"
+  - "rxkad_verify_response (challenge-response)"
+```
+
+**如果 `unverified_assumptions` 非空 → 状态自动降级为 "blocked"。**
+
+### 排除后反向探针（必须执行）
+
+每排除一个候选函数后，立即执行反向探针（<30 秒）：
+
+```bash
+# 检查同子系统是否有未审计的对称函数
+grep -rn "{subsystem}_secure\|{subsystem}_encrypt\|{subsystem}_prepare" $KERNEL_SRC/net/
+grep -rn "{subsystem}_send\|{subsystem}_xmit\|{subsystem}_output" $KERNEL_SRC/net/
+# 检查 TX 方向是否有 splice 页面作为输入
+grep -rn "MSG_SPLICE_PAGES\|sendpage\|splice_write" $KERNEL_SRC/net/{subsystem_dir}/
+```
+
+发现未审计的对称函数 → 记入 `remaining_entry_points`，状态保持 "blocked"。
 
 ### 常见错误排除模式（必须避免）
 
