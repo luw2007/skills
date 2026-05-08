@@ -65,6 +65,33 @@
   "focus": "2.1",
   "strategy": "当前策略说明",
   "stats": { "success": 1, "failed": 4, "active": 1, "pending": 3, "blocked": 0, "skipped": 0 },
+  "engine": {
+    "mode": "autonomous|manual|paused",
+    "domain": "domain adapter 名称（可选，无则使用通用逻辑）",
+    "strategy": "cost-ordered|risk-ordered|breadth-first|depth-first",
+    "iteration": 47,
+    "budget": {
+      "max_iterations": 200,
+      "max_depth": 5,
+      "time_budget_minutes": 480,
+      "max_consecutive_failures": 10,
+      "stop_on_first_success": true,
+      "pause_conditions": ["all_nodes_blocked", "budget_80_percent"],
+      "consumed": {
+        "iterations": 47,
+        "depth_reached": 3,
+        "elapsed_minutes": 34,
+        "consecutive_failures": 2,
+        "successes": 0
+      }
+    },
+    "schedule": {
+      "delay_seconds": 90,
+      "reason": "probe completed, next node ready"
+    },
+    "source_path": "/path/to/target/code",
+    "started_at": "2026-05-08T10:00:00Z"
+  },
   "layers": [
     {
       "id": 1,

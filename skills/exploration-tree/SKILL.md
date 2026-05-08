@@ -1,49 +1,110 @@
 ---
 name: exploration-tree
 description: |
-  通用探索树 Skill。适用于任何需要系统性穷举、验证、排除的复杂问题求解场景。
-  自动维护树状探索日志，采用"广度枚举 → 选易深入 → 失败回溯 → 再广度"的交替策略。
-  触发词："记录探索路径"、"更新探索状态"、"路径回顾"、"反思突破点"、"探索树"。
-  不适用于：已有明确解决方案的简单任务、纯信息检索、单步操作。
-version: 0.5.0
+  自主探索树引擎。适用于需要系统性穷举、验证、排除的复杂问题求解。
+  支持手动和自主两种模式：手动模式逐步记录；自主模式通过 ScheduleWakeup
+  持续运行"广度枚举 → 选择 → 深入 → 回溯"循环，直到找到目标或耗尽预算。
+  触发词："探索树"、"exploration tree"、"自主探索"、"long run explore"。
+version: 1.0.0
 ---
 
 # 探索树（Exploration Tree）
 
-树状探索记录框架，用于系统性求解复杂问题。
+树状探索引擎，支持手动记录和自主循环两种模式。
 
-## 启动：问题确认
+## 命令
 
-开始探索前，将用户输入转化为结构化摘要，展示给用户确认：
+### 手动模式（原有功能）
 
-- **目标**：一句话，包含可量化的成功标准（如"启动时间从 8s 降到 2s 以内"）
-- **约束**：不可违反的条件
-- **已确认事实**：当前已知的关键事实
+- `/exploration-tree` — 初始化探索，确认目标后记录路径
+- `/exploration-tree status` — 查看当前树状态
+- `/exploration-tree reflect` — 手动触发反思，生成新方向
 
-如果问题模糊（缺乏可验证标准、目标不可量化、边界不清晰），要求用户澄清后再继续。不在模糊问题上浪费探索资源。
+### 自主模式（新增）
+
+- `/exploration-tree start` — 启动自主探索循环
+- `/exploration-tree pause` — 暂停循环
+- `/exploration-tree resume` — 恢复循环
+- `/exploration-tree iterate` — 内部命令，执行单轮迭代（由 ScheduleWakeup 触发）
+- `/exploration-tree strategy <name>` — 切换节点选择策略
+
+### start 参数
+
+```
+/exploration-tree start --domain <name> --goal "<目标>" [--budget N] [--strategy <name>] [--depth N] [--timeout Nm] [--source-path /path]
+```
+
+| 参数 | 必须 | 默认 | 说明 |
+|------|------|------|------|
+| --domain | 是 | - | domain adapter 名称（对应 domains/<name>.md） |
+| --goal | 是 | - | 探索目标（含成功标准） |
+| --budget | 否 | 50 | 最大迭代次数 |
+| --strategy | 否 | cost-ordered | 节点选择策略 |
+| --depth | 否 | 5 | 最大探索深度 |
+| --timeout | 否 | 120m | 时间预算 |
+| --source-path | 否 | cwd | 目标代码/数据的路径 |
+| --no-stop-on-success | 否 | false | 找到第一个成功后继续探索 |
+
+### 示例
+
+```bash
+# 内核漏洞搜索
+/exploration-tree start --domain kernel-audit --goal "Find splice page-cache write primitive reachable from user namespace" --budget 200 --source-path ~/linux
+
+# 代码库审计
+/exploration-tree start --domain codebase-review --goal "Find all SQL injection vectors" --budget 50 --source-path .
+
+# 通用复杂问题（无 domain adapter 时使用内置通用逻辑）
+/exploration-tree start --goal "为什么应用启动需要 8 秒" --budget 30
+```
 
 ## 工作流
 
-1. **广度枚举** — 列出当前层所有候选路径 + 难度评估，只做浅探测（< 5min 判断可行性）
-2. **评估排序** — 按 (可行性 × 收益 / 成本) 排序，优先选难度低、收益高的目标
-3. **深度钻探** — 选中目标后全力投入，允许展开子节点
-4. **失败回溯** — 标记排除原因，立即回到步骤 2 选下一个，不在死胡同反复打转
-5. **层级耗尽** — 触发反思（共同失败模式、被忽视的假设），生成新的广度层，回到步骤 1
-6. **持久化** — 每次状态变更同步写入 `state.json`，附带时间戳和理由
-7. **并发安全** — 所有写操作先获取 `.lock`，完成后立即释放
+### 手动模式
+
+1. **广度枚举** — 列出当前层所有候选路径 + 难度评估
+2. **评估排序** — 按 (可行性 × 收益 / 成本) 排序
+3. **深度钻探** — 选中目标后全力投入
+4. **失败回溯** — 标记排除原因，选下一个
+5. **层级耗尽** — 触发反思，生成新层
+6. **持久化** — 每次变更写入 state.json
+
+### 自主模式
+
+在手动模式的基础上，由引擎自动执行选择和迭代：
+
+1. 读取 state.json → 按 strategy 选择 focus 节点
+2. 调用 domain adapter 的 probe/drill/reflect 动作
+3. 更新 state.json
+4. 检查 budget → 未耗尽则 ScheduleWakeup 继续
+5. 每轮之间保持 90s 间隔（prompt cache warm）
+
+详见 `engine/loop.md`。
 
 ## 文件布局
-
-探索文件存储在当前任务的工作目录：
 
 ```
 <project_root>/exploration/
 ├── <task-name>.md           # 探索树日志（人类可读）
-├── <task-name>.state.json   # 机器可读状态（single source of truth）
-└── <task-name>.lock         # 并发锁文件（自动创建/清理）
+├── <task-name>.state.json   # 机器可读状态
+└── <task-name>.lock         # 并发锁
 ```
+
+## Domain Adapters
+
+Domain adapter 定义了特定领域的探索方法。详见 `domains/README.md`。
+
+内置 adapters:
+- `kernel-audit` — Linux 内核漏洞模式搜索
+- `codebase-review` — 通用大代码库审计
+
+无 `--domain` 参数时，引擎使用内置通用逻辑（直接向 LLM 请求 enumerate/probe/reflect）。
 
 ## 资源引用
 
-- **`references/format.md`** — 完整格式规范：Markdown 模板、JSON Schema、状态标签、反思模板、并发控制协议
-- **`references/example.md`** — 完整示例：定位应用启动慢的根因（含 2 层树 + 反思 + 状态输出）
+- **`engine/loop.md`** — 自主循环协议（ScheduleWakeup 调度）
+- **`engine/budget.md`** — 停止条件规范
+- **`engine/strategies.md`** — 节点排序策略
+- **`domains/README.md`** — domain adapter 接口规范
+- **`references/format.md`** — 完整格式规范
+- **`references/example.md`** — 示例
