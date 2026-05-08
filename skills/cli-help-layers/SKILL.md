@@ -49,6 +49,7 @@ Agent 定位正则：`^@(USAGE|HELP|MAN)\s+(.+)$`，区块：`^([A-Z ]+):$`
 6. **Agent 友好性优化** → 参考 `references/agent-friendly.md`（文案风格 + 标记系统 + 披露流程）
 7. **对照检查** → 参考 `references/checklist.md`（五维度 checklist）
 8. **参考完整示例** → 参考 `references/example-feishu-doc.md`（feishu doc 命令族三层完整实践）
+9. **常见问题** → 参考 `references/faq.md`（设计理念来源、标记选择等）
 
 ## 适用范围
 

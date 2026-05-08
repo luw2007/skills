@@ -2,6 +2,12 @@
 
 以下以 `feishu doc` 为例，展示规范的完整实践。
 
+## 目录
+
+- [feishu doc — Usage（$ feishu doc）](#feishu-doc--usage-feishu-doc)
+- [feishu doc create — Help（$ feishu doc create --help）](#feishu-doc-create--help-feishu-doc-create---help)
+- [feishu doc create — Man（$ feishu doc create --man）](#feishu-doc-create--man-feishu-doc-create---man)
+
 ## feishu doc — Usage（`$ feishu doc`）
 
 ```plaintext
