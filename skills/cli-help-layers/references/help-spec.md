@@ -61,6 +61,9 @@ SEE ALSO:
   feishu doc update    修改已有文档内容
   feishu doc get       获取文档内容
   feishu doc search    搜索文档
+
+# 层间发现性提示（必须放在 help 输出最后一行）
+Run 'feishu doc create --man' for full schema, exit codes, and caveats.
 ```
 
 ### 「常见 use case」与「高频 use case」的区分

@@ -37,6 +37,21 @@ BRIEF: / SYNTAX: / OPTIONS: / ENUMS: / EXAMPLES: / ERRORS:  → 区块标签
 
 Agent 定位正则：`^@(USAGE|HELP|MAN)\s+(.+)$`，区块：`^([A-Z ]+):$`
 
+## 层间发现性 (Discoverability)
+
+每层输出的**最后一行**必须包含指向下一层的提示，形成引导链：
+
+| 当前层 | 尾部提示文案 |
+|--------|-------------|
+| `@USAGE` (无参数输出) | `Run '<cmd> --help' for all options and error codes.` |
+| `@HELP` (-h/--help 输出) | `Run '<cmd> --man' for full schema, exit codes, and caveats.` |
+| `@MAN` (--man 输出) | 无（已是最完整层） |
+
+设计要点：
+- 提示使用 dim/grey 样式（终端 `\033[2m`）或尾注格式，避免干扰主要内容
+- Agent 据此判断是否需要请求更详细信息，而非盲目升级到 man 层
+- 如果 CLI 不支持 `--man`，可替换为 `See docs at <url>` 或 `man <cmd>`
+
 ## 工作流
 
 设计或审查 CLI 帮助文档时：

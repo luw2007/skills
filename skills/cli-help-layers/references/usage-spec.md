@@ -72,6 +72,9 @@ EXAMPLES:
 
 ENUMS:
   --format: plain | markdown
+
+# 层间发现性提示（必须放在 usage 输出最后一行）
+Run 'feishu doc create --help' for all options and error codes.
 ```
 
 ## 高频 use case 的挑选原则
