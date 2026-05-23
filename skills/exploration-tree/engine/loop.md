@@ -30,7 +30,7 @@ iteration(state, domain):
   if node.status == "pending":
     result = domain.probe(node, state.context)
 
-    # === SOUNDNESS GATE ===
+    # === SOUNDNESS GATE（正向）===
     # "failed" 标记需要通过完备性检查，防止错误排除
     if result.status == "failed":
       gate = soundness_check(result, node, state)
@@ -38,6 +38,16 @@ iteration(state, domain):
         result.status = "blocked"
         result.conclusion += " [SOUNDNESS GATE: " + gate.reason + "]"
         node.blocked_reason = gate.reason
+
+    # === SOUNDNESS GATE（逆向/降级）===
+    # 从 success/confirmed 降级为 failed/eliminated 同样需要通过完备性检查
+    # 防止"深度验证"阶段自我说服产生错误否定
+    if node.previous_status in ("success", "confirmed", "active") and result.status == "failed":
+      gate = downgrade_soundness_check(result, node, state)
+      if not gate.passed:
+        result.status = node.previous_status  # 恢复原状态
+        result.conclusion += " [DOWNGRADE BLOCKED: " + gate.reason + "]"
+        node.downgrade_blocked_reason = gate.reason
 
     node.status = result.status  # "success" | "failed" | "blocked"
     node.actual = result.actual
@@ -208,3 +218,59 @@ soundness_check(result, node, state):
 Soundness Gate 确保 **排除一个路径必须是 sound 的**（证明所有入口都安全），
 不能只证明最常见入口安全。宁可多一些 "blocked" 节点消耗额外迭代，
 也不能错误排除真正的漏洞路径。
+
+## Downgrade Soundness Gate（降级完备性校验）
+
+当一个节点从 `success/confirmed/active` 被降级为 `failed/eliminated` 时触发。
+防止"深度验证"阶段的自我说服产生错误否定。
+
+**任一项未通过 → 拒绝降级，保持原状态。**
+
+```
+downgrade_soundness_check(result, node, state):
+  checks = []
+
+  # 1. 否定证据必须比肯定证据更强
+  if len(result.evidence) <= len(node.original_evidence):
+    checks.append("降级证据不比原始确认证据更充分")
+
+  # 2. 变量混淆检测
+  if result.conclusion 引用了某个变量名来否定原结论:
+    # 验证该变量是否与原结论中的变量是同一个（同函数、同作用域）
+    if 变量可能存在同名不同作用域的情况:
+      checks.append("可能存在变量混淆 — 需确认引用的变量与原分析的是同一实例")
+
+  # 3. 反向路径检查
+  if 降级只否定了一个方向（如 TX/output）:
+    if 未同时验证反方向（RX/input）是否也被否定:
+      checks.append("仅否定了单方向，未验证反向路径是否仍然有效")
+
+  # 4. 防御纵深谬误检测
+  defense_keywords = ["多层防御", "defense in depth", "其他机制", "other mechanisms",
+                      "即使.*也能阻止", "multiple layers"]
+  if any(k in result.conclusion for k in defense_keywords):
+    checks.append("使用了'防御纵深'论证 — 需要证明每一层具体如何拦截此特定路径，而非泛泛引用")
+
+  # 5. 过度自信检测
+  confidence_keywords = ["100%", "绝对", "完全不可能", "absolutely", "impossible",
+                         "definitively", "no way"]
+  if any(k in result.conclusion for k in confidence_keywords):
+    checks.append("结论使用了绝对化语言 — 安全分析不应有100%确定的否定结论")
+
+  if checks:
+    return { passed: false, reason: "; ".join(checks) }
+  return { passed: true }
+```
+
+### Downgrade Gate 的意义
+
+这是从 dirtyfrag 发现过程中提炼的规则：
+
+- 探索曾先确认 ESP4 skip_cow 存在漏洞（正确）
+- 后续"深度验证"中混淆了两个不同作用域的 `nfrags` 变量
+- 基于混淆的变量得出"skb_to_sgvec 会返回 -EMSGSIZE"的错误结论
+- 进而以"防御纵深"为由全面否定，声称"100% 确信不可利用"
+- 实际上漏洞确实存在（CVE-2026-43284），且 exploit 已验证
+
+Downgrade Gate 确保 **推翻一个已确认的发现，门槛必须高于确认它的门槛。**
+否定证据必须更强、必须覆盖所有方向、不能依赖泛化的防御论证。
