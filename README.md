@@ -4,12 +4,13 @@ AI Agent Skills 集合 — 面向 Claude Code / Trae / OpenClaw 等 AI 编程助
 
 ## 原创 Skills ⭐
 
-以下 4 个 skill 为原创设计，部分属于 AI Agent 领域首创概念：
+以下 5 个 skill 为原创设计，部分属于 AI Agent 领域首创概念：
 
 | Skill | 简介 | 详情 |
 |-------|------|------|
 | [cli-help-layers](./skills/cli-help-layers/) | CLI 帮助信息分层设计指南 — Usage/Help/Man 三层渐进式披露架构，让 AI Agent 高效解析和调用 CLI 命令 | [README](./skills/cli-help-layers/README.md) |
 | [exploration-tree](./skills/exploration-tree/) | 通用探索树 — 树状探索记录框架，采用"广度枚举→选易深入→失败回溯→再广度"交替策略，系统性求解复杂问题 | [README](./skills/exploration-tree/README.md) |
+| [fast-rebase](./skills/fast-rebase/) | squash-merge 后的加速 rebase — 用 MESSAGE+TIME+STATE 三重信号定位 upstream 已合并 commit 并 drop，逐字节校验零代码丢失 | [README](./skills/fast-rebase/README.md) |
 | [skill-iter](./skills/skill-iter/) | Skill 自迭代评审引擎 — 7 维度评审标准 + 完整工具链，评估并提升 Skill 的自迭代闭环能力 | [README](./skills/skill-iter/README.md) |
 | [skill-selector](./skills/skill-selector/) | 通用 Skill 选择器 — 下载候选源码做深度分析，构建决策树，1-3 轮交互选定最合适的 skill | [README](./skills/skill-selector/README.md) |
 
@@ -19,6 +20,7 @@ AI Agent Skills 集合 — 面向 Claude Code / Trae / OpenClaw 等 AI 编程助
 |-------|-------------|
 | [cli-help-layers](./skills/cli-help-layers/) | CLI 帮助信息分层设计指南，让 AI Agent 高效解析和调用 CLI 命令 |
 | [exploration-tree](./skills/exploration-tree/) | 通用探索树，树状探索记录框架，系统性穷举、验证、排除复杂问题 |
+| [fast-rebase](./skills/fast-rebase/) | squash-merge 后的加速 rebase，三重信号定位 upstream 已合并 commit 并 drop，逐字节校验零代码丢失 |
 | [favorites-curator](./skills/favorites-curator/) | 从本地已安装的仓库、应用、skill、扩展中构建和维护收藏目录清单 |
 | [langextract-search](./skills/langextract-search/) | 集成智谱搜索、DuckDuckGo 搜索和多模型结构化提取的完整工作流 |
 | [metadata-naming](./skills/metadata-naming/) | 定义、应用或审查基于元数据的可复用文件命名规范 |
@@ -29,6 +31,15 @@ AI Agent Skills 集合 — 面向 Claude Code / Trae / OpenClaw 等 AI 编程助
 | [skill-yao-manager](./skills/skill-yao-manager/) | Skill 工程化管理工具，支持创建、验证、检查、lint、打包 skill |
 
 ## Installation
+
+### Via Claude Code plugin marketplace
+
+```bash
+# 在 Claude Code 内添加本 marketplace
+/plugin marketplace add luw2007/skills
+# 安装单个 skill（如 fast-rebase）
+/plugin install fast-rebase@luw2007-skills
+```
 
 ### Via npx skills (Recommended)
 

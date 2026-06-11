@@ -22,6 +22,8 @@
 #                  merge + every file it touched is also touched there (squash merge)
 #   REVIEW         message matched but time/state disagreed — kept; inspect by hand
 #   UNMERGED       not present upstream — kept and replayed
+#
+# Part of luw2007/skills — MIT License.
 set -euo pipefail
 
 BASE="origin/master"

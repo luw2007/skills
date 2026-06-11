@@ -1,0 +1,156 @@
+{
+  "name": "luw2007-skills",
+  "owner": {
+    "name": "luw2007",
+    "url": "https://github.com/luw2007"
+  },
+  "metadata": {
+    "description": "AI Agent Skills 集合 — 面向 Claude Code / Cursor / Codex 等 AI 编程助手的可复用技能包",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "fast-rebase",
+      "source": "./skills/fast-rebase",
+      "description": "squash-merge 后的加速 rebase — 用 MESSAGE+TIME+STATE 三重信号定位 upstream 已合并的本地 commit 并 drop，逐字节校验零代码丢失",
+      "version": "0.1.0",
+      "author": { "name": "luw2007" },
+      "homepage": "https://github.com/luw2007/skills/tree/main/skills/fast-rebase",
+      "repository": "https://github.com/luw2007/skills",
+      "license": "MIT",
+      "category": "git",
+      "keywords": ["git", "rebase", "squash-merge", "merge-detection", "workflow"],
+      "strict": false
+    },
+    {
+      "name": "cli-help-layers",
+      "source": "./skills/cli-help-layers",
+      "description": "CLI 帮助信息分层设计指南 — Usage/Help/Man 三层渐进式披露架构，让 AI Agent 高效解析和调用 CLI 命令",
+      "version": "1.0.0",
+      "author": { "name": "luw2007" },
+      "homepage": "https://github.com/luw2007/skills/tree/main/skills/cli-help-layers",
+      "repository": "https://github.com/luw2007/skills",
+      "license": "MIT",
+      "category": "documentation",
+      "keywords": ["cli", "help", "documentation", "agent-friendly"],
+      "strict": false
+    },
+    {
+      "name": "exploration-tree",
+      "source": "./skills/exploration-tree",
+      "description": "通用探索树 — 树状探索记录框架，采用广度枚举→选易深入→失败回溯交替策略，系统性求解复杂问题",
+      "version": "1.0.0",
+      "author": { "name": "luw2007" },
+      "homepage": "https://github.com/luw2007/skills/tree/main/skills/exploration-tree",
+      "repository": "https://github.com/luw2007/skills",
+      "license": "MIT",
+      "category": "workflow",
+      "keywords": ["exploration", "search", "problem-solving", "backtracking"],
+      "strict": false
+    },
+    {
+      "name": "skill-iter",
+      "source": "./skills/skill-iter",
+      "description": "Skill 自迭代评审引擎 — 7 维度评审标准 + 完整工具链，评估并提升 Skill 的自迭代闭环能力",
+      "version": "1.0.0",
+      "author": { "name": "luw2007" },
+      "homepage": "https://github.com/luw2007/skills/tree/main/skills/skill-iter",
+      "repository": "https://github.com/luw2007/skills",
+      "license": "MIT",
+      "category": "meta",
+      "keywords": ["skill", "review", "audit", "self-improvement"],
+      "strict": false
+    },
+    {
+      "name": "skill-selector",
+      "source": "./skills/skill-selector",
+      "description": "通用 Skill 选择器 — 下载候选源码做深度分析，构建决策树，1-3 轮交互选定最合适的 skill",
+      "version": "1.0.0",
+      "author": { "name": "luw2007" },
+      "homepage": "https://github.com/luw2007/skills/tree/main/skills/skill-selector",
+      "repository": "https://github.com/luw2007/skills",
+      "license": "MIT",
+      "category": "meta",
+      "keywords": ["skill", "selector", "decision-tree"],
+      "strict": false
+    },
+    {
+      "name": "skill-yao-manager",
+      "source": "./skills/skill-yao-manager",
+      "description": "Skill 工程化管理工具 — 支持创建、验证、检查、lint、打包 skill",
+      "version": "1.0.0",
+      "author": { "name": "luw2007" },
+      "homepage": "https://github.com/luw2007/skills/tree/main/skills/skill-yao-manager",
+      "repository": "https://github.com/luw2007/skills",
+      "license": "MIT",
+      "category": "meta",
+      "keywords": ["skill", "lint", "validate", "package"],
+      "strict": false
+    },
+    {
+      "name": "favorites-curator",
+      "source": "./skills/favorites-curator",
+      "description": "从本地已安装的仓库、应用、skill、扩展中构建和维护收藏目录清单",
+      "version": "1.0.0",
+      "author": { "name": "luw2007" },
+      "homepage": "https://github.com/luw2007/skills/tree/main/skills/favorites-curator",
+      "repository": "https://github.com/luw2007/skills",
+      "license": "MIT",
+      "category": "productivity",
+      "keywords": ["favorites", "catalog", "inventory"],
+      "strict": false
+    },
+    {
+      "name": "langextract-search",
+      "source": "./skills/langextract-search",
+      "description": "集成智谱搜索、DuckDuckGo 搜索和多模型结构化提取的完整工作流",
+      "version": "1.0.0",
+      "author": { "name": "luw2007" },
+      "homepage": "https://github.com/luw2007/skills/tree/main/skills/langextract-search",
+      "repository": "https://github.com/luw2007/skills",
+      "license": "MIT",
+      "category": "search",
+      "keywords": ["search", "extraction", "structured-output"],
+      "strict": false
+    },
+    {
+      "name": "metadata-naming",
+      "source": "./skills/metadata-naming",
+      "description": "定义、应用或审查基于元数据的可复用文件命名规范",
+      "version": "1.0.0",
+      "author": { "name": "luw2007" },
+      "homepage": "https://github.com/luw2007/skills/tree/main/skills/metadata-naming",
+      "repository": "https://github.com/luw2007/skills",
+      "license": "MIT",
+      "category": "workflow",
+      "keywords": ["naming", "metadata", "convention"],
+      "strict": false
+    },
+    {
+      "name": "octocode",
+      "source": "./skills/octocode",
+      "description": "AI 驱动的代码索引器 — 提供语义搜索、知识图谱（GraphRAG）和持久化记忆系统",
+      "version": "1.0.0",
+      "author": { "name": "luw2007" },
+      "homepage": "https://github.com/luw2007/skills/tree/main/skills/octocode",
+      "repository": "https://github.com/luw2007/skills",
+      "license": "MIT",
+      "category": "search",
+      "keywords": ["code-search", "graphrag", "memory", "indexer"],
+      "strict": false
+    },
+    {
+      "name": "rtk-rewrite",
+      "source": "./skills/rtk-rewrite",
+      "description": "拦截 exec 工具调用并委托 rtk rewrite 执行重写以减少 token 消耗",
+      "version": "1.0.0",
+      "author": { "name": "luw2007" },
+      "homepage": "https://github.com/luw2007/skills/tree/main/skills/rtk-rewrite",
+      "repository": "https://github.com/luw2007/skills",
+      "license": "MIT",
+      "category": "productivity",
+      "keywords": ["token", "rewrite", "optimization"],
+      "strict": false
+    }
+  ]
+}
