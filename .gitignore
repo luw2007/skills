@@ -4,3 +4,4 @@ __pycache__/
 .coverage
 .trae/
 third_party/
+.omc/
