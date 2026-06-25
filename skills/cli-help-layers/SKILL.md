@@ -5,7 +5,6 @@ description: |
   适用于需要让 AI Agent 高效解析和调用 CLI 命令的场景：命令结构设计、参数命名、渐进式披露、示例覆盖策略、错误信息设计等。
   触发词：CLI 文档设计、帮助信息设计、CLI help layers、agent 友好 CLI、命令行规范、usage/help/man 设计。
 metadata:
-  source: https://bytedance.larkoffice.com/wiki/Wu6pwTlLUioB6lk1nWIceykLnef
 ---
 
 # CLI Help Layers：帮助信息分层设计指南

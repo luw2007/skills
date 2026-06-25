@@ -121,7 +121,7 @@ $tmpdir/
 
 1. **SKILL.md**（必读）→ 技能描述、触发条件、使用方式的权威来源
 2. **代码文件**（深度分析）→ 遍历 skill 目录中的所有代码文件（`.sh`、`.py`、`.js`、`.ts` 等），提取：
-   - 实际调用的外部命令和工具链（如 `bytedcli`、`gdpa-cli`、`argos`）
+   - 实际调用的外部命令和工具链（如 `logcli`、`gdpa-cli`、`argos`）
    - 依赖的环境变量和配置项
    - 核心逻辑流程和分支条件
    - 错误处理策略
@@ -209,7 +209,7 @@ $tmpdir/
 | 覆盖范围 | one_liner, capabilities | 国内 / 海外 / 全量 |
 | 操作粒度 | capabilities | 原始查询 / 诊断分析 / 配置管理 |
 | 前置成本 | prerequisites | 零配置 / 需 CLI / 需登录 |
-| 工具链 | prerequisites, input_format | byte-cli / argos cli / curl |
+| 工具链 | prerequisites, input_format | log-cli / argos cli / curl |
 | 输出形式 | output_format | 文本 / JSON / 自动存文件 |
 
 维度从摘要中动态推导，上表仅为参考。LLM 应根据实际摘要内容识别最有区分力的维度。
@@ -242,7 +242,7 @@ $tmpdir/
   "question": "你的主要需求是？",
   "branches": {
     "日志查询": {
-      "skills": ["argos-log", "argos-query", "argos-tools", "argos-log-i18n", "bytedance-log-i18n"],
+      "skills": ["argos-log", "argos-query", "argos-tools", "argos-log-i18n", "cloud-log-i18n"],
       "child": {
         "type": "decision",
         "dimension": "区域",
@@ -258,10 +258,10 @@ $tmpdir/
             }
           },
           "海外": {
-            "skills": ["argos-log-i18n", "bytedance-log-i18n"],
+            "skills": ["argos-log-i18n", "cloud-log-i18n"],
             "child": {
               "type": "leaf",
-              "skills": ["argos-log-i18n", "bytedance-log-i18n"],
+              "skills": ["argos-log-i18n", "cloud-log-i18n"],
               "comparison_matrix": { "...预计算的对比矩阵..." : "..." },
               "recommendation": { "pick": "argos-log-i18n", "reason": "..." }
             }
@@ -349,7 +349,7 @@ $tmpdir/
 |------|---------|---------|---------|
 | 定位 | ... | ... | ... |
 | 独有能力 | ✅ X | ❌ X | ✅ X |
-| 前置条件 | 需 argos cli | 需 byte-cli | 零依赖 |
+| 前置条件 | 需 argos cli | 需 log-cli | 零依赖 |
 | 输出方式 | JSON | 自动存文件 | 文本 |
 | 亮点 | ... | ... | ... |
 | 限制 | ... | ... | ... |
@@ -408,7 +408,7 @@ $tmpdir/
 
 📋 初筛结果（排除明显不相关）：
    ✅ 保留 8 个: argos-log, argos, argos-log-i18n, argos-query, argos-tools,
-                 bytedance-log-i18n, bytedance-apm, modify-argos-alarm-rule
+                 cloud-log-i18n, service-apm, modify-argos-alarm-rule
    ❌ 排除 2 个: dh-ops-debug-job-failure（DH 任务调试，与日志查询无关）
                  hornbill-dev（工单平台开发，与 argos 无关）
 
@@ -418,8 +418,8 @@ $tmpdir/
    ✅ argos-log-i18n (3 files)
    ✅ argos-query (1 file)
    ✅ argos-tools (1 file)
-   ✅ bytedance-log-i18n (4 files)
-   ✅ bytedance-apm (2 files)
+   ✅ cloud-log-i18n (4 files)
+   ✅ service-apm (2 files)
    ✅ modify-argos-alarm-rule (2 files)
 ```
 
@@ -433,9 +433,9 @@ $tmpdir/
 决策树概览：
 ├── 日志查询 (5)
 │   ├── 国内 (3) → [argos-log, argos-query, argos-tools] → 对比矩阵已就绪
-│   └── 海外 (2) → [argos-log-i18n, bytedance-log-i18n] → 对比矩阵已就绪
+│   └── 海外 (2) → [argos-log-i18n, cloud-log-i18n] → 对比矩阵已就绪
 ├── 综合诊断 (1) → argos → 直接推荐
-├── 指标监控 (1) → bytedance-apm → 直接推荐
+├── 指标监控 (1) → service-apm → 直接推荐
 └── 报警管理 (1) → modify-argos-alarm-rule → 直接推荐
 
 → AskUserQuestion: 你的主要需求是？
@@ -456,10 +456,10 @@ $tmpdir/
 ```
 | 维度 | argos-log | argos-query | argos-tools |
 |------|-----------|-------------|-------------|
-| 定位 | byte-cli 日志查询 | gdpa-cli 日志查询 | argos CLI 日志工具 |
-| 工具链（代码验证） | bytedcli log | gdpa-cli argos-query | argos log.* 子命令 |
+| 定位 | log-cli 日志查询 | gdpa-cli 日志查询 | argos CLI 日志工具 |
+| 工具链（代码验证） | logcli log | gdpa-cli argos-query | argos log.* 子命令 |
 | 查询模式 | TraceQuery + KeywordQuery | Keyword + LocalFile + LogID | log.* 子命令 |
-| 前置条件 | 需安装 byte-cli + 浏览器登录态 | 需安装 gdpa-cli | 需安装 argos CLI + 扫码登录 |
+| 前置条件 | 需安装 log-cli + 浏览器登录态 | 需安装 gdpa-cli | 需安装 argos CLI + 扫码登录 |
 | 输出方式 | JSON（需 output-filter） | 结构化 JSON | 文本（大输出自动存文件） |
 | 独有优势 | 精确 KV 过滤、分页 | 三种模式自动切换、PPE 支持 | 自动保存大输出、简洁命令 |
 | 代码质量 | ✅ 错误处理完善 | ✅ 多模式分支清晰 | ⚠️ 较简单 |
