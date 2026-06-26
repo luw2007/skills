@@ -18,7 +18,7 @@ description: |
 | 层级 | 名称 | 本质 | 最低要求 |
 |------|------|------|----------|
 | L1 | 运行时自修复 | 边执行边修正过时步骤 | SKILL.md 中明确授权 Agent 就地修复 |
-| L2 | 执行后经验沉淀 | 每次执行的教训自动积累 | 有 Lessons Learned 章节 + 触发条件 + 合并策略 |
+| L2 | 执行后经验沉淀 | 每次执行的教训自动积累 | 有 Local Lessons Learned 协议 + 本机 state 路径 + 合并策略 |
 | L3 | 跨 Skill 知识联动 | 一个 skill 的经验惠及其他 skill | 经验可被外部 skill 引用或编排器聚合 |
 
 ## 评审维度（7 项）
@@ -62,7 +62,7 @@ def should_improve(feedback) -> bool:
 
 **mirror-release Phase 14 的三分法是达标标准**：
 - 固化为工具调用 → 确定性步骤，写入 SKILL.md Phase
-- 记录为经验规避 → 条件性步骤，写入 Lessons Learned
+- 记录为经验规避 → 条件性步骤，写入本机 Local Lessons Learned
 - 无需处理 → 一次性问题，仅记录在报告中
 
 ### D4: 经验持久化 — 分析结果写到哪里、怎么管理
@@ -71,7 +71,7 @@ def should_improve(feedback) -> bool:
 |------|------|
 | ❌ 缺失 | 经验仅存在于对话上下文，用完即消失 |
 | ⚠️ 基础 | 手动维护"注意事项"章节 |
-| ✅ 达标 | 自动写入 Lessons Learned 章节，有去重 + FIFO 淘汰（上限 N 条） |
+| ✅ 达标 | 自动写入本机 Local Lessons Learned，有去重 + FIFO 淘汰（上限 N 条） |
 | 🌟 优秀 | 语义去重（embedding 相似度）+ LRU/引用频率淘汰 + 分类标签 |
 
 **当前最佳实践**：
@@ -85,16 +85,18 @@ def _merge_lessons(existing, new_items, max_entries=10):
     return merged[-max_entries:]  # FIFO 淘汰
 ```
 
+默认持久化位置：`${XDG_STATE_HOME:-~/.local/state}/openclaw-skills/<skill-name>/lessons-learned.md`。
+
 ### D5: 注入闭环 — 经验如何回到下次执行
 
 | 等级 | 标准 |
 |------|------|
 | ❌ 缺失 | 经验写了但下次不读 |
 | ⚠️ 基础 | 需要人工提醒 Agent 参考历史 |
-| ✅ 达标 | Tier 2 加载时自动包含 Lessons Learned，Agent 自然读到 |
+| ✅ 达标 | 加载 SKILL.md 时自动读取本机 Local Lessons Learned |
 | 🌟 优秀 | 按当前任务上下文动态筛选最相关的经验注入 |
 
-**核心验证**：执行路径上是否存在 `read SKILL.md → 执行 → 写 Lessons Learned → 下次 read 包含新内容` 的闭环。
+**核心验证**：执行路径上是否存在 `read SKILL.md → read local lessons → execute → write local lessons → next run reads updated lessons` 的闭环。
 
 ### D6: 安全门禁 — 防止自迭代引入破坏
 
@@ -134,7 +136,7 @@ THREAT_PATTERNS = [
 
 | 检查项 | 扫描方式 | 判定 |
 |--------|----------|------|
-| Lessons Learned 章节 | 正则 `##.*Lessons?\s+Learned|##.*经验|##.*已知问题` | 有/无 |
+| Local Lessons Learned 协议 | 正则 `##.*(Local\s+)?Lessons?\s+Learned|##.*经验|##.*已知问题` | 有/无 |
 | 自检/回顾阶段 | 正则 `自检|retrospective|迭代|review|回顾` 出现在 Phase 定义中 | 有/无 |
 | `.pending` 机制 | 检查 skill 目录下是否有 `.pending` 文件或代码中引用 `.pending` | 有/无 |
 | references 目录 | 检查是否有 `references/` 子目录存放补充文档 | 有/无 |
@@ -152,7 +154,7 @@ THREAT_PATTERNS = [
 | D1 反馈采集 | ✅ | Phase 14 采集错误/耗时/阻塞 |
 | D2 触发判定 | ⚠️ | 每次都执行，未区分"值得分析" |
 | D3 分析能力 | ✅ | 三分法（固化/规避/忽略） |
-| D4 经验持久化 | ⚠️ | 有 Lessons Learned 但无淘汰策略 |
+| D4 经验持久化 | ⚠️ | 有 Local Lessons Learned 但无淘汰策略 |
 | D5 注入闭环 | ✅ | Tier 2 加载自动包含 |
 | D6 安全门禁 | ⚠️ | 依赖 git，无 .pending |
 | D7 可观测性 | ⚠️ | 仅 git log |
@@ -174,17 +176,17 @@ THREAT_PATTERNS = [
          输出"本次流程顺利"并跳过深度分析
    收益：减少约 60% 的无效分析轮数
 
-2. [D4] 引入 FIFO 淘汰策略
-   当前：Lessons Learned 只增不减
-   建议：在 Phase 14.2 固化步骤中，当条目超过 10 条时淘汰最早的
-   收益：防止 SKILL.md 膨胀超出 LLM 注意力窗口
+2. [D4] 引入本机 state + FIFO 淘汰策略
+   当前：Lessons Learned 写在 SKILL.md 或只增不减
+   建议：写入 `${XDG_STATE_HOME:-~/.local/state}/openclaw-skills/<skill-name>/lessons-learned.md`，超过 10 条时淘汰低价值旧条目
+   收益：保留多 agent 共享经验，同时避免私有经验进入 GitHub
 ```
 
 ## 配置
 
 | 键 | 默认值 | 说明 |
 |----|--------|------|
-| MAX_LESSONS_ENTRIES | 10 | Lessons Learned 最大条目数 |
+| MAX_LESSONS_ENTRIES | 10 | Local Lessons Learned 最大条目数 |
 | TURNS_THRESHOLD | 20 | "成功但低效"的轮数阈值 |
 | AUTO_MERGE_CONFIDENCE | 0.9 | 高于此置信度可跳过人工确认 |
 | THREAT_SCAN_ENABLED | true | 是否启用 prompt 注入检测 |
@@ -220,10 +222,10 @@ THREAT_PATTERNS = [
 2. **触发判定**：调用 `scripts/should_improve.py` 判断是否值得启动深度分析
 3. **轨迹分析**：调用 `scripts/analyze_trajectory.py` 对反馈执行三分法分类（固化/经验/忽略）
 4. **安全扫描**：如果产生了新的经验条目，调用 `scripts/threat_scan.py` 扫描注入威胁
-5. **经验暂存**：通过 `scripts/merge_lessons.py --add` 将改进建议写入 `.pending_lessons.json`
-6. **人工确认**：提示用户执行 `scripts/merge_lessons.py --commit` 将 pending 经验合入 SKILL.md
+5. **经验写入**：把通过安全扫描的新经验写入本机 Local Lessons Learned state 文件
+6. **结构改动确认**：只有需要固化流程/工具行为时，才生成 pending SKILL.md 改进并等待人工确认
 
-注入闭环路径：`Agent 读取 SKILL.md（含 Lessons Learned）→ 执行评审 → 采集反馈 → 分析改进 → 写入 .pending → 人工确认合入 → 下次读取时自动包含`
+注入闭环路径：`Agent 读取 SKILL.md → 读取本机 Local Lessons Learned → 执行评审 → 采集反馈 → 分析改进 → 写入本机 lessons 或 pending 结构改动 → 下次执行自动读取`
 
 ## 工具链 — scripts/
 
@@ -232,13 +234,17 @@ THREAT_PATTERNS = [
 | `collect_feedback.py` | 采集执行反馈到 `reports/feedback-log.json` | D1 |
 | `should_improve.py` | 判定是否需要触发改进分析 | D2 |
 | `analyze_trajectory.py` | 三分法分析（固化/经验/忽略），输出 `reports/analysis-report.json` | D3 |
-| `merge_lessons.py` | 管理 Lessons Learned（.pending → 人工确认 → 合入） | D4, D6 |
+| `merge_lessons.py` | 管理本机 Local Lessons Learned（去重 + 淘汰 + 写入） | D4, D6 |
 | `threat_scan.py` | Prompt 注入检测 | D6 |
 | `run_retrospective.py` | 端到端编排管线（collect→judge→analyze→scan→merge），输出 `reports/improvement-log.json` | D5, D7 |
 
-## Lessons Learned
+## Local Lessons Learned
 
-- 首次实现时发现 SKILL.md 仅定义标准但不满足自身标准，需 eat your own dog food
-- D3（分析能力）仅有标准定义不够，必须配套 `analyze_trajectory.py` 实现三分法自动分类
-- D5（注入闭环）依赖人工按序调用 4 个脚本不现实，需 `run_retrospective.py` 一键编排
-- D7（可观测性）不能仅依赖 git log，`improvement-log.json` 记录触发原因/session/时间戳才可追溯
+Private runtime lessons are stored outside Git so multiple local agents can share them without uploading them to GitHub.
+
+- Read before execution: `${XDG_STATE_HOME:-~/.local/state}/openclaw-skills/skill-iter/lessons-learned.md`
+- If the file exists, treat it as part of this skill's local context.
+- After real usage, update that file only when a new lesson changes future behavior.
+- Keep at most 10 deduped lessons; evict stale or low-value entries first.
+- When writing, acquire an atomic lock with `mkdir "${XDG_STATE_HOME:-$HOME/.local/state}/openclaw-skills/skill-iter/lessons-learned.lock"`; remove it after the write.
+- Do not commit the local lessons file or copy private lessons back into this `SKILL.md`.

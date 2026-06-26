@@ -5,3 +5,4 @@ __pycache__/
 .trae/
 third_party/
 .omc/
+.claude

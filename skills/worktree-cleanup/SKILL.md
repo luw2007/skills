@@ -47,8 +47,8 @@ description: >-
    `git worktree prune`。
 6. **执行后回顾与触发判定（Post-run Phase）**：仅遇到 error、blocking、成功但低效（高轮次/重复人工判断）
    时才分析是否要改本 skill；按 codify / lesson / ignore 三分法处理。任何 skill 修改先给用户
-   human review，不自动写入发布包；下次执行会自动包含本节和 Lessons Learned，形成
-   `read SKILL.md → execute → review → write if approved` 闭环。
+   human review，不自动写入发布包；下次执行会自动包含本节和 Local Lessons Learned，形成
+   `read SKILL.md → read local lessons → execute → review → write local lessons if useful` 闭环。
 
 ## 硬约束
 
@@ -78,7 +78,13 @@ description: >-
   当前「删 worktree 保留分支」已兜死此风险（commit 还在分支上）；**若要扩展脚本去自动删分支
   （更不可逆），必须先加上述 patch-id 内容证明做门禁**。
 
-## Lessons Learned
+## Local Lessons Learned
 
-- KEEP/REMOVE 判定只信 fast-rebase 输出和工作树脏否；展示字段、分支名、subject 都不能单独当证明。
-- 并发环境必须按已 review 的精确路径删除；不要在 apply 阶段重新发现候选。
+Private runtime lessons are stored outside Git so multiple local agents can share them without uploading them to GitHub.
+
+- Read before execution: `${XDG_STATE_HOME:-~/.local/state}/openclaw-skills/worktree-cleanup/lessons-learned.md`
+- If the file exists, treat it as part of this skill's local context.
+- After real usage, update that file only when a new lesson changes future behavior.
+- Keep at most 10 deduped lessons; evict stale or low-value entries first.
+- When writing, acquire an atomic lock with `mkdir "${XDG_STATE_HOME:-$HOME/.local/state}/openclaw-skills/worktree-cleanup/lessons-learned.lock"`; remove it after the write.
+- Do not commit the local lessons file or copy private lessons back into this `SKILL.md`.

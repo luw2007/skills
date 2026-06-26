@@ -42,7 +42,7 @@ description: 测试用 skill
 分析能力：三分法 codify / lesson / ignore。
 LLM 分析轨迹提取信号 (llm_extract)。
 
-闭环路径：Agent 读取 SKILL.md → 执行 → 写入 Lessons Learned → 下次读取自动包含。
+闭环路径：Agent 读取 SKILL.md → 读取本机 Local Lessons Learned → 执行 → 写入本机 lessons → 下次读取自动包含。
 动态筛选注入最相关经验。
 
 安全：.pending_evolution 目录 + 人工确认 + threat_scan 注入检测。
@@ -50,10 +50,9 @@ LLM 分析轨迹提取信号 (llm_extract)。
 可观测性：improvement-log.json 记录 session_id / timestamp / reason。
 versions.json 支持回滚。
 
-## Lessons Learned
+## Local Lessons Learned
 
-- 经验条目 1
-- 经验条目 2
+Read `${XDG_STATE_HOME:-~/.local/state}/openclaw-skills/test-skill/lessons-learned.md`.
 
 ## 配置
 
@@ -115,11 +114,11 @@ class TestAuditEmptyDir:
 
 class TestAuditMinimalSkill:
     def test_d4_at_least_basic(self, tmp_path: Path) -> None:
-        """仅有 SKILL.md 含 Lessons Learned，D4 至少 BASIC。"""
+        """仅有 SKILL.md 含 Local Lessons Learned，D4 至少 BASIC。"""
         skill_dir = tmp_path / "minimal"
         skill_dir.mkdir()
         (skill_dir / "SKILL.md").write_text(
-            "# My Skill\n\n## Lessons Learned\n\n- 经验 1\n",
+            "# My Skill\n\n## Local Lessons Learned\n\nRead local lessons.\n",
             encoding="utf-8",
         )
         report = Auditor(skill_dir).audit()

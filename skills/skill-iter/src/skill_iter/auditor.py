@@ -259,7 +259,10 @@ class Auditor:
         dim, name = "D4", "经验持久化"
 
         has_lessons_section = self._skill_md_contains(
-            r"(?i)##\s*Lessons?\s+Learned"
+            r"(?i)##\s*(Local\s+)?Lessons?\s+Learned"
+        )
+        has_local_state = self._all_text_contains(
+            r"(?i)(XDG_STATE_HOME|openclaw-skills|local.?state|本机.*lessons)"
         )
         has_merge_file = self._has_file_matching(
             "merge_lessons", "pending", "merge*", "lesson*"
@@ -271,21 +274,21 @@ class Auditor:
             r"(?i)(语义去重|semantic.?dedup|LRU|embedding.?dedup)"
         )
 
-        if has_lessons_section and has_merge_file and has_eviction and has_semantic_dedup:
+        if has_lessons_section and has_local_state and has_merge_file and has_eviction and has_semantic_dedup:
             return DimensionResult(dim, name, Grade.EXCELLENT,
-                                   "Lessons Learned + 去重 + 语义去重/LRU")
-        if has_lessons_section and (has_merge_file or has_eviction):
+                                   "Local Lessons Learned + 本机 state + 语义去重/LRU")
+        if has_lessons_section and has_local_state and (has_merge_file or has_eviction):
             return DimensionResult(dim, name, Grade.GOOD,
-                                   "有 Lessons Learned 章节 + 去重/FIFO 淘汰")
+                                   "有 Local Lessons Learned 协议 + 去重/FIFO 淘汰")
         if has_lessons_section or has_merge_file:
             return DimensionResult(dim, name, Grade.BASIC,
-                                   "手动维护经验，缺少自动化",
-                                   ["在 SKILL.md 中添加 ## Lessons Learned 章节",
-                                    "实现 merge_lessons 自动合入 + FIFO 淘汰"])
+                                   "手动维护经验，缺少本机 state 协议或自动化",
+                                   ["在 SKILL.md 中添加 ## Local Lessons Learned 协议",
+                                    "实现本机 lessons 写入 + FIFO 淘汰"])
         return DimensionResult(dim, name, Grade.MISSING,
                                "无经验持久化",
-                               ["在 SKILL.md 中添加 ## Lessons Learned 章节",
-                                "创建 merge_lessons 脚本 + .pending 流程",
+                               ["在 SKILL.md 中添加 ## Local Lessons Learned 协议",
+                                "创建本机 lessons 写入流程",
                                 "设置 max_entries + FIFO 淘汰策略"])
 
     # ------ D5: 注入闭环 ------
@@ -311,17 +314,17 @@ class Auditor:
                                    "闭环路径完整 + 自动包含 + 动态筛选注入")
         if (has_loop_desc or has_retro_file) and has_auto_include:
             return DimensionResult(dim, name, Grade.GOOD,
-                                   "执行时自动包含 Lessons Learned")
+                                   "执行时自动包含 Local Lessons Learned")
         if has_loop_desc or has_retro_file:
             return DimensionResult(dim, name, Grade.BASIC,
                                    "有编排脚本但需人工提醒注入",
-                                   ["在执行阶段自动读取 Lessons Learned",
+                                   ["在执行阶段自动读取 Local Lessons Learned",
                                     "实现「读取 → 执行 → 写入 → 下次读取」闭环"])
         return DimensionResult(dim, name, Grade.MISSING,
                                "写了但不读，无注入闭环",
                                ["在 SKILL.md 中描述闭环路径",
                                 "创建 run_retrospective 编排脚本",
-                                "确保执行时自动包含 Lessons Learned"])
+                                "确保执行时自动包含 Local Lessons Learned"])
 
     # ------ D6: 安全门禁 ------
 

@@ -29,6 +29,22 @@ AI Agent Skills 集合 — 面向 Claude Code / Trae / OpenClaw 等 AI 编程助
 | [skill-iter](./skills/skill-iter/) | Skill 自迭代能力评审与改进工具，输出结构化评分报告与改进建议 |
 | [skill-selector](./skills/skill-selector/) | 通用 skill 选择器，通过深度分析构建决策树，引导用户快速选定最合适的 skill |
 | [skill-yao-manager](./skills/skill-yao-manager/) | Skill 工程化管理工具，支持创建、验证、检查、lint、打包 skill |
+| [worktree-cleanup](./skills/worktree-cleanup/) | 清理本地 git worktree，复用 fast-rebase 判定已合入 commit，只删除安全的干净工作副本 |
+
+## Local Lessons Learned
+
+带自优化能力的 skill 只在 GitHub 中提交读取协议，不提交个人实战教训。多个本机 agents 共享同一目录：
+
+```text
+${XDG_STATE_HOME:-~/.local/state}/openclaw-skills/<skill-name>/lessons-learned.md
+```
+
+使用规则：
+
+- 加载 skill 时先读对应 `lessons-learned.md`，存在则视为本机私有上下文。
+- 实战后只把会改变未来行为的新教训写入该文件，语义去重，最多保留 10 条。
+- 写入时用同目录 `lessons-learned.lock` 做原子锁，避免多个 agent 并发覆盖。
+- 不把本机 lessons 文件复制回 `SKILL.md`，也不提交到公开仓库。
 
 ## Installation
 
